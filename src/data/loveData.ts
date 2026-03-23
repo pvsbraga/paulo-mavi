@@ -1,20 +1,21 @@
-import heroBanner from "@/assets/hero-banner.jpg";
-import card1 from "@/assets/card-1.jpg";
-import card2 from "@/assets/card-2.jpg";
-import card3 from "@/assets/card-3.jpg";
-import card4 from "@/assets/card-4.jpg";
-import card5 from "@/assets/card-5.jpg";
-import card6 from "@/assets/card-6.jpg";
-import card7 from "@/assets/card-7.jpg";
-import card8 from "@/assets/card-8.jpg";
+import photoHero from "@/assets/photo-hero.jpg";
+import photo2 from "@/assets/photo-2.jpg";
+import photo3 from "@/assets/photo-3.jpg";
+import photo4 from "@/assets/photo-4.jpg";
+import photo5 from "@/assets/photo-5.jpg";
+import photo6 from "@/assets/photo-6.jpg";
+import photo7 from "@/assets/photo-7.jpg";
+import photo8 from "@/assets/photo-8.jpg";
+import video1 from "@/assets/video-1.mp4";
+import video2 from "@/assets/video-2.mp4";
 
 export const heroData = {
-  title: "A Maior História de Amor",
+  title: "O maior casal do Brasil",
   subtitle: "Original Só Nosso",
-  description:
-    "Dois corações que se encontraram e nunca mais se largaram. Uma história que ainda está sendo escrita — a mais bonita de todas.",
+  description: "Paulo e Mavi: do início da relação até então",
   tags: ["Amor", "Real", "Para Sempre", "2025"],
-  image: heroBanner,
+  image: photoHero,
+  video: video1,
   match: "💯 Combinamos muito",
 };
 
@@ -22,7 +23,8 @@ export type CardItem = {
   id: number;
   title: string;
   phrase: string;
-  image: string;
+  image?: string;
+  video?: string;
   tag: string;
   year: string;
 };
@@ -31,24 +33,24 @@ export const destaquesRow: CardItem[] = [
   {
     id: 1,
     title: "De Mãos Dadas",
-    phrase: "Posso segurar a sua mão para sempre?",
-    image: card1,
+    phrase: "Se pudesse, eu poderia segurar sua mãozinha para sempre",
+    image: photo2,
     tag: "Romântico",
     year: "Agora",
   },
   {
     id: 2,
-    title: "Para Você",
-    phrase: "Você merece todas as rosas do mundo 🌹",
-    image: card2,
+    title: "Você ❤️",
+    phrase: "Poderia tirar fotos suas com seus cabelos cacheados todo momento",
+    image: photo3,
     tag: "Amor",
     year: "Sempre",
   },
   {
     id: 3,
     title: "Nosso Universo",
-    phrase: "No céu todo, só você importa",
-    image: card3,
+    phrase: "Poderia viver só contigo",
+    image: photo4,
     tag: "Mágico",
     year: "Eterno",
   },
@@ -56,7 +58,7 @@ export const destaquesRow: CardItem[] = [
     id: 5,
     title: "Pôr do Sol",
     phrase: "Cada pôr do sol é mais bonito do seu lado",
-    image: card5,
+    image: photo5,
     tag: "Cinematográfico",
     year: "Todo dia",
   },
@@ -65,9 +67,9 @@ export const destaquesRow: CardItem[] = [
 export const momentosRow: CardItem[] = [
   {
     id: 4,
-    title: "Cafezinho Juntos",
-    phrase: "Qualquer momento é especial com você",
-    image: card4,
+    title: "Atividades Juntos",
+    phrase: "Qualquer atividade é especial com você, minha atleta 🎾🏐",
+    image: photo6,
     tag: "Aconchego",
     year: "Nosso",
   },
@@ -75,24 +77,26 @@ export const momentosRow: CardItem[] = [
     id: 6,
     title: "Luzes do Coração",
     phrase: "Você ilumina tudo ao meu redor ✨",
-    image: card6,
+    video: video2,
     tag: "Fofo",
     year: "Sempre",
   },
   {
     id: 7,
-    title: "Meu Coraçãozinho",
-    phrase: "Meu coração bate assim quando penso em você 💖",
-    image: card7,
+    title: "Sorrisos",
+    phrase: "Só você me faz dar um sorriso verdadeiro",
+    image: photo7,
     tag: "Cute",
     year: "Todo dia",
   },
   {
     id: 8,
-    title: "Nosso Piquenique",
+    title: "Momentinhos",
     phrase: "Quero ter momentos assim com você até o fim",
-    image: card8,
+    image: photo8,
     tag: "Especial",
     year: "2025",
   },
 ];
+
+export { video1 };
