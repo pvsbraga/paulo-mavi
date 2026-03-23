@@ -1,16 +1,204 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState, useEffect } from "react";
+import { Heart, Play, Info } from "lucide-react";
+import heroBanner from "@/assets/hero-banner.jpg";
+import { heroData } from "@/data/loveData";
+import { CardRow } from "@/components/CardRow";
+import { destaquesRow, momentosRow } from "@/data/loveData";
 
-// IMPORTANT: Fully REPLACE this with your own code
-const PlaceholderIndex = () => {
-  // PLACEHOLDER: Replace this entire return statement with the user's app.
-  // The inline background color is intentionally not part of the design system.
+export default function Index() {
+  const [scrolled, setScrolled] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 60);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
+    <div className="min-h-screen bg-netflix-dark text-foreground">
+      {/* ── NAVBAR ── */}
+      <nav
+        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-4 transition-all duration-500"
+        style={{
+          background: scrolled
+            ? "hsl(var(--netflix-darker))"
+            : "linear-gradient(to bottom, hsl(0 0% 5% / 0.8), transparent)",
+        }}
+      >
+        {/* Logo */}
+        <div className="flex items-center gap-2">
+          <span className="font-display text-netflix-red text-3xl md:text-4xl tracking-wider select-none">
+            LOVEFLIX
+          </span>
+        </div>
+
+        {/* Nav links */}
+        <div className="hidden md:flex items-center gap-6 text-sm text-foreground/80">
+          <span className="hover:text-foreground cursor-pointer transition-colors">Início</span>
+          <span className="hover:text-foreground cursor-pointer transition-colors">Nossos Momentos</span>
+          <span className="hover:text-foreground cursor-pointer transition-colors">Destaques</span>
+          <span className="hover:text-foreground cursor-pointer transition-colors">Pra Você</span>
+        </div>
+
+        {/* Right side */}
+        <div className="flex items-center gap-3">
+          <Heart
+            size={22}
+            className="text-netflix-red fill-netflix-red animate-pulse-heart cursor-pointer"
+          />
+        </div>
+      </nav>
+
+      {/* ── HERO SECTION ── */}
+      <section className="relative w-full h-[85vh] md:h-[90vh] overflow-hidden">
+        {/* Background */}
+        <img
+          src={heroBanner}
+          alt="Hero"
+          width={1280}
+          height={720}
+          className="absolute inset-0 w-full h-full object-cover object-center"
+        />
+
+        {/* Gradient overlays */}
+        <div className="absolute inset-0 hero-gradient-overlay" />
+        <div className="absolute bottom-0 left-0 right-0 h-40 netflix-gradient-overlay" />
+
+        {/* Content */}
+        <div className="absolute inset-0 flex flex-col justify-end pb-20 md:pb-28 px-6 md:px-12">
+          {/* Badge */}
+          <div
+            className="mb-3 animate-fade-in-up"
+            style={{ animationDelay: "100ms", animationFillMode: "both" }}
+          >
+            <span className="bg-netflix-red text-foreground text-xs font-semibold px-3 py-1 rounded-sm uppercase tracking-widest">
+              Original Só Nosso
+            </span>
+          </div>
+
+          {/* Title */}
+          <h1
+            className="font-display text-5xl md:text-7xl lg:text-8xl text-foreground max-w-2xl leading-none mb-3 animate-fade-in-up"
+            style={{ animationDelay: "200ms", animationFillMode: "both" }}
+          >
+            {heroData.title}
+          </h1>
+
+          {/* Match */}
+          <p
+            className="text-sm text-green-400 font-semibold mb-3 animate-fade-in-up"
+            style={{ animationDelay: "300ms", animationFillMode: "both" }}
+          >
+            {heroData.match}
+          </p>
+
+          {/* Tags */}
+          <div
+            className="flex gap-2 flex-wrap mb-4 animate-fade-in-up"
+            style={{ animationDelay: "350ms", animationFillMode: "both" }}
+          >
+            {heroData.tags.map((tag) => (
+              <span key={tag} className="text-xs text-muted-foreground border border-border rounded px-2 py-0.5">
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          {/* Description */}
+          <p
+            className="text-foreground/85 text-sm md:text-base max-w-md mb-6 leading-relaxed animate-fade-in-up"
+            style={{ animationDelay: "400ms", animationFillMode: "both" }}
+          >
+            {heroData.description}
+          </p>
+
+          {/* Buttons */}
+          <div
+            className="flex gap-3 animate-fade-in-up"
+            style={{ animationDelay: "500ms", animationFillMode: "both" }}
+          >
+            <button className="flex items-center gap-2 bg-foreground text-background font-semibold px-6 py-2.5 rounded text-sm hover:bg-foreground/80 transition-colors">
+              <Play size={16} className="fill-background" />
+              Assistir
+            </button>
+            <button
+              onClick={() => setShowInfo(!showInfo)}
+              className="flex items-center gap-2 bg-muted/80 text-foreground font-semibold px-6 py-2.5 rounded text-sm hover:bg-muted transition-colors backdrop-blur-sm"
+            >
+              <Info size={16} />
+              Mais Info
+            </button>
+          </div>
+
+          {/* Info panel */}
+          {showInfo && (
+            <div className="mt-4 max-w-sm bg-netflix-card/90 backdrop-blur-md rounded-lg p-4 border border-border animate-fade-in-up">
+              <p className="text-foreground/90 text-sm leading-relaxed italic">
+                "Você é a minha história favorita — aquela que nunca me canso de reler. ❤️"
+              </p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ── CONTENT ROWS ── */}
+      <div className="relative z-10 -mt-8 pb-16">
+        <CardRow title="✨ Destaques de Nós" items={destaquesRow} delay={200} />
+        <CardRow title="💕 Nossos Momentos" items={momentosRow} delay={400} />
+
+        {/* ── CUTE MESSAGE BANNER ── */}
+        <section
+          className="mx-6 md:mx-12 my-8 rounded-xl overflow-hidden relative animate-fade-in-up"
+          style={{ animationDelay: "600ms", animationFillMode: "both" }}
+        >
+          <div
+            className="p-8 md:p-12 text-center relative z-10"
+            style={{
+              background:
+                "linear-gradient(135deg, hsl(var(--netflix-red) / 0.15), hsl(var(--netflix-card)), hsl(var(--netflix-red) / 0.08))",
+              border: "1px solid hsl(var(--netflix-red) / 0.3)",
+              borderRadius: "12px",
+            }}
+          >
+            <Heart
+              size={40}
+              className="text-netflix-red fill-netflix-red mx-auto mb-4 animate-pulse-heart"
+            />
+            <h2 className="font-display text-3xl md:text-5xl text-foreground mb-3">
+              Para Você, Meu Amor
+            </h2>
+            <p className="text-foreground/75 max-w-lg mx-auto text-sm md:text-base leading-relaxed">
+              Cada foto que vou colocar aqui é um capítulo da nossa história. Você é o meu programa
+              favorito — aquele que nunca termina e que eu quero ver em <em>loop</em> para sempre.
+              💖
+            </p>
+            <div className="mt-6 flex justify-center gap-4 flex-wrap">
+              {["❤️ Te amo", "🥰 Você é incrível", "✨ Minha favorita", "💫 Para sempre"].map(
+                (tag) => (
+                  <span
+                    key={tag}
+                    className="text-xs bg-netflix-red/20 text-netflix-red border border-netflix-red/30 rounded-full px-3 py-1"
+                  >
+                    {tag}
+                  </span>
+                )
+              )}
+            </div>
+          </div>
+        </section>
+      </div>
+
+      {/* ── FOOTER ── */}
+      <footer className="border-t border-border px-6 md:px-12 py-8 text-center">
+        <div className="flex items-center justify-center gap-2 mb-2">
+          <span className="font-display text-netflix-red text-2xl">LOVEFLIX</span>
+          <Heart size={14} className="text-netflix-red fill-netflix-red" />
+        </div>
+        <p className="text-muted-foreground text-xs">
+          Feito com ❤️ especialmente para você · {new Date().getFullYear()}
+        </p>
+      </footer>
     </div>
   );
-};
-
-const Index = PlaceholderIndex;
-
-export default Index;
+}
