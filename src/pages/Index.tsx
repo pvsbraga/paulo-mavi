@@ -177,8 +177,8 @@ export default function Index() {
 
       {/* ── CONTENT ROWS ── */}
       <div className="relative z-10 -mt-8 pb-16">
-        <CardRow title="✨ Destaques de Nós" items={destaquesRow} delay={200} />
-        <CardRow title="💕 Mavis e Paulo" items={momentosRow} delay={400} />
+        <CardRow title="Destaques de Nós" items={destaquesRow} delay={200} />
+        <CardRow title="Mavis e Paulo" items={momentosRow} delay={400} />
 
         {/* ── CUTE MESSAGE BANNER ── */}
         <section

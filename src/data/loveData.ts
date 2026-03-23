@@ -16,7 +16,7 @@ export const heroData = {
   tags: ["Amor", "Real", "Para Sempre", "2025"],
   image: photoHero,
   video: video1,
-  match: "💯 Combinamos muito",
+  match: "Combinamos muito",
 };
 
 export type CardItem = {
