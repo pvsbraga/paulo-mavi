@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
-import { Heart, Play, Info } from "lucide-react";
-import heroBanner from "@/assets/hero-banner.jpg";
+import { useState, useEffect, useRef } from "react";
+import { Heart, Play, Info, X } from "lucide-react";
 import { heroData } from "@/data/loveData";
 import { CardRow } from "@/components/CardRow";
 import { destaquesRow, momentosRow } from "@/data/loveData";
@@ -8,6 +7,8 @@ import { destaquesRow, momentosRow } from "@/data/loveData";
 export default function Index() {
   const [scrolled, setScrolled] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
+  const [showVideo, setShowVideo] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -17,6 +18,35 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-netflix-dark text-foreground">
+
+      {/* ── VIDEO MODAL ── */}
+      {showVideo && (
+        <div
+          className="fixed inset-0 z-[200] flex items-center justify-center bg-black/95 backdrop-blur-sm"
+          onClick={() => setShowVideo(false)}
+        >
+          <div
+            className="relative max-w-2xl w-full mx-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setShowVideo(false)}
+              className="absolute -top-10 right-0 text-foreground/70 hover:text-foreground transition-colors flex items-center gap-1 text-sm"
+            >
+              <X size={18} /> Fechar
+            </button>
+            <video
+              ref={videoRef}
+              src={heroData.video}
+              className="w-full rounded-xl shadow-2xl"
+              autoPlay
+              controls
+              playsInline
+            />
+          </div>
+        </div>
+      )}
+
       {/* ── NAVBAR ── */}
       <nav
         className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-4 transition-all duration-500"
@@ -54,7 +84,7 @@ export default function Index() {
       <section className="relative w-full h-[85vh] md:h-[90vh] overflow-hidden">
         {/* Background */}
         <img
-          src={heroBanner}
+          src={heroData.image}
           alt="Hero"
           width={1280}
           height={720}
@@ -118,7 +148,10 @@ export default function Index() {
             className="flex gap-3 animate-fade-in-up"
             style={{ animationDelay: "500ms", animationFillMode: "both" }}
           >
-            <button className="flex items-center gap-2 bg-foreground text-background font-semibold px-6 py-2.5 rounded text-sm hover:bg-foreground/80 transition-colors">
+            <button
+              onClick={() => setShowVideo(true)}
+              className="flex items-center gap-2 bg-foreground text-background font-semibold px-6 py-2.5 rounded text-sm hover:bg-foreground/80 transition-colors"
+            >
               <Play size={16} className="fill-background" />
               Assistir
             </button>
@@ -135,7 +168,7 @@ export default function Index() {
           {showInfo && (
             <div className="mt-4 max-w-sm bg-netflix-card/90 backdrop-blur-md rounded-lg p-4 border border-border animate-fade-in-up">
               <p className="text-foreground/90 text-sm leading-relaxed italic">
-                "Você é a minha história favorita — aquela que nunca me canso de reler. ❤️"
+                "você é minha história favorita, Mavi🤍"
               </p>
             </div>
           )}
@@ -145,7 +178,7 @@ export default function Index() {
       {/* ── CONTENT ROWS ── */}
       <div className="relative z-10 -mt-8 pb-16">
         <CardRow title="✨ Destaques de Nós" items={destaquesRow} delay={200} />
-        <CardRow title="💕 Nossos Momentos" items={momentosRow} delay={400} />
+        <CardRow title="💕 Mavis e Paulo" items={momentosRow} delay={400} />
 
         {/* ── CUTE MESSAGE BANNER ── */}
         <section
@@ -166,12 +199,14 @@ export default function Index() {
               className="text-netflix-red fill-netflix-red mx-auto mb-4 animate-pulse-heart"
             />
             <h2 className="font-display text-3xl md:text-5xl text-foreground mb-3">
-              Para Você, Meu Amor
+              Para você, Maria Victória
             </h2>
             <p className="text-foreground/75 max-w-lg mx-auto text-sm md:text-base leading-relaxed">
-              Cada foto que vou colocar aqui é um capítulo da nossa história. Você é o meu programa
-              favorito — aquele que nunca termina e que eu quero ver em <em>loop</em> para sempre.
-              💖
+              Cada foto e vídeo que coloquei aqui representa uma parte da minha alma e personalidade
+              com você, cada parte do meu eu cru. Você é minha série que maratonarei sempre e o filme
+              que assistirei 1 milhão de vezes, especialmente depois dos nossos dias difíceis.
+              <br /><br />
+              Eu te amo, meu amor 🤍
             </p>
             <div className="mt-6 flex justify-center gap-4 flex-wrap">
               {["❤️ Te amo", "🥰 Você é incrível", "✨ Minha favorita", "💫 Para sempre"].map(
@@ -190,13 +225,16 @@ export default function Index() {
       </div>
 
       {/* ── FOOTER ── */}
-      <footer className="border-t border-border px-6 md:px-12 py-8 text-center">
+      <footer className="border-t border-border px-6 md:px-12 py-8">
         <div className="flex items-center justify-center gap-2 mb-2">
           <span className="font-display text-netflix-red text-2xl">LOVEFLIX</span>
           <Heart size={14} className="text-netflix-red fill-netflix-red" />
         </div>
-        <p className="text-muted-foreground text-xs">
+        <p className="text-muted-foreground text-xs text-center">
           Feito com ❤️ especialmente para você · {new Date().getFullYear()}
+        </p>
+        <p className="text-muted-foreground text-xs text-right mt-2">
+          Paulo Victor
         </p>
       </footer>
     </div>
