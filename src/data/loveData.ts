@@ -12,7 +12,7 @@ import video2 from "@/assets/video-2.mp4";
 export const heroData = {
   title: "O maior casal do Brasil",
   subtitle: "Original Só Nosso",
-  description: "Paulo e Mavi: do início da relação até então",
+  description: "Paulo e Mavis: de 26/09/2025 até o fim, com muitos jogos, filmes, séries e esportes",
   tags: ["Amor", "Real", "Para Sempre", "2025"],
   image: photoHero,
   video: video1,

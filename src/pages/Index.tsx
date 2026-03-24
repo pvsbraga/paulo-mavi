@@ -9,6 +9,8 @@ export default function Index() {
   const [showInfo, setShowInfo] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const destaquesRef = useRef<HTMLDivElement>(null);
+  const mavisRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -65,10 +67,18 @@ export default function Index() {
 
         {/* Nav links */}
         <div className="hidden md:flex items-center gap-6 text-sm text-foreground/80">
-          <span className="hover:text-foreground cursor-pointer transition-colors">Início</span>
-          <span className="hover:text-foreground cursor-pointer transition-colors">Nossos Momentos</span>
-          <span className="hover:text-foreground cursor-pointer transition-colors">Destaques</span>
-          <span className="hover:text-foreground cursor-pointer transition-colors">Pra Você</span>
+          <span
+            className="hover:text-foreground cursor-pointer transition-colors"
+            onClick={() => destaquesRef.current?.scrollIntoView({ behavior: "smooth" })}
+          >
+            Destaques de Nós
+          </span>
+          <span
+            className="hover:text-foreground cursor-pointer transition-colors"
+            onClick={() => mavisRef.current?.scrollIntoView({ behavior: "smooth" })}
+          >
+            Mavis e Paulo
+          </span>
         </div>
 
         {/* Right side */}
@@ -177,8 +187,12 @@ export default function Index() {
 
       {/* ── CONTENT ROWS ── */}
       <div className="relative z-10 -mt-8 pb-16">
-        <CardRow title="Destaques de Nós" items={destaquesRow} delay={200} />
-        <CardRow title="Mavis e Paulo" items={momentosRow} delay={400} />
+        <div ref={destaquesRef}>
+          <CardRow title="Destaques de Nós" items={destaquesRow} delay={200} />
+        </div>
+        <div ref={mavisRef}>
+          <CardRow title="Mavis e Paulo" items={momentosRow} delay={400} />
+        </div>
 
         {/* ── CUTE MESSAGE BANNER ── */}
         <section
