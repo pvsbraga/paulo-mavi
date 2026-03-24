@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { createPortal } from "react-dom";
 import { CardItem } from "@/data/loveData";
 import { Heart, X } from "lucide-react";
 
@@ -15,9 +16,9 @@ function FullscreenModal({
   item: CardItem;
   onClose: () => void;
 }) {
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm animate-fade-in-up"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-sm animate-fade-in-up"
       onClick={onClose}
     >
       <div
@@ -63,7 +64,8 @@ function FullscreenModal({
           </p>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
