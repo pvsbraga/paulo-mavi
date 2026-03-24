@@ -64,7 +64,8 @@ function FullscreenModal({
           </p>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
