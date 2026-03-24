@@ -9,6 +9,8 @@ export default function Index() {
   const [showInfo, setShowInfo] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const destaquesRef = useRef<HTMLDivElement>(null);
+  const mavisRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
