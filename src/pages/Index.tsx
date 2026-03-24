@@ -67,10 +67,18 @@ export default function Index() {
 
         {/* Nav links */}
         <div className="hidden md:flex items-center gap-6 text-sm text-foreground/80">
-          <span className="hover:text-foreground cursor-pointer transition-colors">Início</span>
-          <span className="hover:text-foreground cursor-pointer transition-colors">Nossos Momentos</span>
-          <span className="hover:text-foreground cursor-pointer transition-colors">Destaques</span>
-          <span className="hover:text-foreground cursor-pointer transition-colors">Pra Você</span>
+          <span
+            className="hover:text-foreground cursor-pointer transition-colors"
+            onClick={() => destaquesRef.current?.scrollIntoView({ behavior: "smooth" })}
+          >
+            Destaques de Nós
+          </span>
+          <span
+            className="hover:text-foreground cursor-pointer transition-colors"
+            onClick={() => mavisRef.current?.scrollIntoView({ behavior: "smooth" })}
+          >
+            Mavis e Paulo
+          </span>
         </div>
 
         {/* Right side */}
