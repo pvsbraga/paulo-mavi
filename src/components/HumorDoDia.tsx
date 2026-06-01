@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 
 import imgFelizinha from "@/assets/moods/felizinha.jpg";
 import imgQueroDengo from "@/assets/moods/quero-dengo.png";
@@ -41,37 +44,80 @@ const moods: Mood[] = [
   { id: "emburrada", name: "Emburrada", image: imgEmburrada, color: "#F8C8D8", ring: "#C45C7C", description: "Cara fechada, biquinho, braços cruzados. Tá sentida e não vai esconder." },
 ];
 
-const STORAGE_MOODS = "mavi:moods";
-const STORAGE_NOTE = "mavi:recadinho";
-
 export function HumorDoDia() {
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [note, setNote] = useState("");
+  const { username } = useAuth();
+  const isMavi = username === "mavi";
 
+  const [selectedIds, setSelectedIds] = useState<string[]>(["felizinha"]);
+  const [note, setNote] = useState("");
+  const [savingNote, setSavingNote] = useState(false);
+
+  // Initial load
   useEffect(() => {
-    try {
-      const m = JSON.parse(localStorage.getItem(STORAGE_MOODS) || "[]");
-      if (Array.isArray(m) && m.length) setSelectedIds(m);
-      else setSelectedIds(["felizinha"]);
-      setNote(localStorage.getItem(STORAGE_NOTE) || "");
-    } catch {
-      setSelectedIds(["felizinha"]);
-    }
+    supabase
+      .from("mood_state")
+      .select("selected_ids, note")
+      .eq("id", "current")
+      .maybeSingle()
+      .then(({ data }) => {
+        if (data) {
+          setSelectedIds(data.selected_ids?.length ? data.selected_ids : ["felizinha"]);
+          setNote(data.note ?? "");
+        }
+      });
+
+    // Realtime
+    const channel = supabase
+      .channel("mood-state")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "mood_state" },
+        (payload: any) => {
+          const row = payload.new;
+          if (!row) return;
+          setSelectedIds(row.selected_ids?.length ? row.selected_ids : ["felizinha"]);
+          setNote(row.note ?? "");
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem(STORAGE_MOODS, JSON.stringify(selectedIds));
-  }, [selectedIds]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_NOTE, note);
-  }, [note]);
+  const persistMoods = async (ids: string[]) => {
+    const { error } = await supabase
+      .from("mood_state")
+      .update({ selected_ids: ids, updated_at: new Date().toISOString() })
+      .eq("id", "current");
+    if (error) toast.error("Não foi possível salvar o humor");
+  };
 
   const toggle = (id: string) => {
-    setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-    );
+    if (!isMavi) return;
+    const next = selectedIds.includes(id)
+      ? selectedIds.filter((x) => x !== id)
+      : [...selectedIds, id];
+    setSelectedIds(next);
+    persistMoods(next);
   };
+
+  // Debounced save for the note
+  useEffect(() => {
+    if (!isMavi) return;
+    setSavingNote(true);
+    const t = setTimeout(async () => {
+      const { error } = await supabase
+        .from("mood_state")
+        .update({ note, updated_at: new Date().toISOString() })
+        .eq("id", "current");
+      setSavingNote(false);
+      if (error) toast.error("Não foi possível salvar o recadinho");
+    }, 600);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [note, isMavi]);
 
   const selected = moods.filter((m) => selectedIds.includes(m.id));
   const primary = selected[0] ?? moods[0];
@@ -89,10 +135,11 @@ export function HumorDoDia() {
           border: `1px solid ${primary.ring}55`,
         }}
       >
-        {/* Selected moods showcase */}
         <div className="flex flex-col items-center text-center mb-6">
           {selected.length === 0 ? (
-            <p className="text-foreground/70 text-sm">Toca em um ou mais humores abaixo 💗</p>
+            <p className="text-foreground/70 text-sm">
+              {isMavi ? "Toca em um ou mais humores abaixo 🤍" : "Mavi ainda não escolheu o humor de hoje 🤍"}
+            </p>
           ) : (
             <>
               <div className="flex flex-wrap items-center justify-center gap-4 mb-4">
@@ -100,9 +147,7 @@ export function HumorDoDia() {
                   <div key={m.id} className="flex flex-col items-center">
                     <div
                       className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden transition-all duration-500"
-                      style={{
-                        boxShadow: `0 0 0 4px ${m.ring}, 0 12px 30px ${m.ring}55`,
-                      }}
+                      style={{ boxShadow: `0 0 0 4px ${m.ring}, 0 12px 30px ${m.ring}55` }}
                     >
                       <img src={m.image} alt={m.name} className="w-full h-full object-cover" loading="lazy" />
                     </div>
@@ -119,7 +164,6 @@ export function HumorDoDia() {
             </>
           )}
 
-          {/* Recadinho da Mavi */}
           <div
             className="mt-5 rounded-2xl p-4 max-w-xl w-full text-left"
             style={{ backgroundColor: `${primary.ring}1c`, border: `1px dashed ${primary.ring}77` }}
@@ -130,24 +174,32 @@ export function HumorDoDia() {
             >
               Recadinho da Mavi pro Paulo
             </span>
-            <p className="text-foreground/70 text-[11px] md:text-xs mb-2 leading-relaxed">
-              Mavi, escreve aqui pro Paulo como ele deve te tratar e falar com você hoje, o que esperar de você e sugestões do que ele pode fazer. Ele vai ler 🤍
-            </p>
-            <textarea
-              value={note}
-              onChange={(e) => setNote(e.target.value.slice(0, 3000))}
-              placeholder="Hoje eu tô assim... me trata com... pode fazer..."
-              maxLength={3000}
-              rows={5}
-              className="w-full bg-background/40 text-foreground text-sm rounded-xl p-3 outline-none resize-y border border-border focus:border-foreground/40 transition-colors"
-            />
-            <div className="text-right text-[10px] text-muted-foreground mt-1">
-              {note.length}/3000
-            </div>
+            {isMavi ? (
+              <>
+                <p className="text-foreground/70 text-[11px] md:text-xs mb-2 leading-relaxed">
+                  Mavi, escreve aqui pro Paulo como ele deve te tratar e falar com você hoje, o que esperar de você e sugestões do que ele pode fazer. Ele vai ler 🤍
+                </p>
+                <textarea
+                  value={note}
+                  onChange={(e) => setNote(e.target.value.slice(0, 3000))}
+                  placeholder="Hoje eu tô assim... me trata com... pode fazer..."
+                  maxLength={3000}
+                  rows={5}
+                  className="w-full bg-background/40 text-foreground text-sm rounded-xl p-3 outline-none resize-y border border-border focus:border-foreground/40 transition-colors"
+                />
+                <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
+                  <span>{savingNote ? "Salvando..." : "Salvo automaticamente"}</span>
+                  <span>{note.length}/3000</span>
+                </div>
+              </>
+            ) : (
+              <p className="text-foreground/90 text-sm whitespace-pre-wrap leading-relaxed min-h-[3rem]">
+                {note?.trim() ? note : "A Mavi ainda não deixou recado por aqui hoje 🤍"}
+              </p>
+            )}
           </div>
         </div>
 
-        {/* Mood grid */}
         <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 gap-3 md:gap-4 justify-items-center">
           {moods.map((m) => {
             const active = selectedIds.includes(m.id);
@@ -155,7 +207,10 @@ export function HumorDoDia() {
               <button
                 key={m.id}
                 onClick={() => toggle(m.id)}
-                className="flex flex-col items-center gap-1 group"
+                disabled={!isMavi}
+                className={`flex flex-col items-center gap-1 group ${
+                  !isMavi ? "cursor-default" : ""
+                }`}
               >
                 <div
                   className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden transition-all duration-300 group-hover:scale-110"
@@ -163,7 +218,7 @@ export function HumorDoDia() {
                     boxShadow: active
                       ? `0 0 0 3px ${m.ring}, 0 8px 20px ${m.ring}66`
                       : `0 4px 12px hsl(0 0% 0% / 0.4)`,
-                    opacity: active ? 1 : 0.75,
+                    opacity: active ? 1 : isMavi ? 0.75 : 0.5,
                   }}
                 >
                   <img src={m.image} alt={m.name} className="w-full h-full object-cover" loading="lazy" />
@@ -178,6 +233,12 @@ export function HumorDoDia() {
             );
           })}
         </div>
+
+        {!isMavi && (
+          <p className="text-center text-[11px] text-muted-foreground mt-5">
+            Só a Mavi pode mudar o humor e o recadinho 🤍
+          </p>
+        )}
       </div>
     </section>
   );
