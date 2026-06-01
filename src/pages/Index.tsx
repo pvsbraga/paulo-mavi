@@ -81,6 +81,12 @@ export default function Index() {
           >
             Mavis e Paulo
           </span>
+          <span
+            className="hover:text-foreground cursor-pointer transition-colors"
+            onClick={() => humorRef.current?.scrollIntoView({ behavior: "smooth" })}
+          >
+            Humor do Dia
+          </span>
         </div>
 
         {/* Right side */}
