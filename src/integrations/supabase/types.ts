@@ -14,13 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      mood_state: {
+        Row: {
+          id: string
+          note: string
+          selected_ids: string[]
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          note?: string
+          selected_ids?: string[]
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          note?: string
+          selected_ids?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          id: string
+          username: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          username: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          username?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_mavi: { Args: never; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
