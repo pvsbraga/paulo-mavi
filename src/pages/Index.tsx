@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Heart, Play, Info, X } from "lucide-react";
 import { heroData } from "@/data/loveData";
 import { CardRow } from "@/components/CardRow";
+import { HumorDoDia } from "@/components/HumorDoDia";
 import { destaquesRow, momentosRow } from "@/data/loveData";
 
 export default function Index() {
@@ -11,6 +12,7 @@ export default function Index() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const destaquesRef = useRef<HTMLDivElement>(null);
   const mavisRef = useRef<HTMLDivElement>(null);
+  const humorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -78,6 +80,12 @@ export default function Index() {
             onClick={() => mavisRef.current?.scrollIntoView({ behavior: "smooth" })}
           >
             Mavis e Paulo
+          </span>
+          <span
+            className="hover:text-foreground cursor-pointer transition-colors"
+            onClick={() => humorRef.current?.scrollIntoView({ behavior: "smooth" })}
+          >
+            Humor do Dia
           </span>
         </div>
 
@@ -193,6 +201,10 @@ export default function Index() {
         <div ref={mavisRef}>
           <CardRow title="Mavis e Paulo" items={momentosRow} delay={400} />
         </div>
+        <div ref={humorRef} className="mt-8">
+          <HumorDoDia />
+        </div>
+
 
         {/* ── CUTE MESSAGE BANNER ── */}
         <section
