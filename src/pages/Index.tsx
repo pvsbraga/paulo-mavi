@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from "react";
-import { Heart, Play, Info, X } from "lucide-react";
+import { Heart, Play, Info, X, LogOut } from "lucide-react";
 import { heroData } from "@/data/loveData";
 import { CardRow } from "@/components/CardRow";
 import { HumorDoDia } from "@/components/HumorDoDia";
 import { destaquesRow, momentosRow } from "@/data/loveData";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Index() {
+  const { username, signOut } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
@@ -91,10 +93,22 @@ export default function Index() {
 
         {/* Right side */}
         <div className="flex items-center gap-3">
+          {username && (
+            <span className="hidden sm:inline text-xs text-foreground/70 uppercase tracking-widest">
+              {username === "mavi" ? "Mavi" : "Paulo"}
+            </span>
+          )}
           <Heart
             size={22}
-            className="text-netflix-red fill-netflix-red animate-pulse-heart cursor-pointer"
+            className="text-netflix-red fill-netflix-red animate-pulse-heart"
           />
+          <button
+            onClick={signOut}
+            title="Sair"
+            className="text-foreground/70 hover:text-foreground transition-colors"
+          >
+            <LogOut size={18} />
+          </button>
         </div>
       </nav>
 
