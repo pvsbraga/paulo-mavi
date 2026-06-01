@@ -12,6 +12,7 @@ export default function Index() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const destaquesRef = useRef<HTMLDivElement>(null);
   const mavisRef = useRef<HTMLDivElement>(null);
+  const humorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
