@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Heart, Play, Info, X } from "lucide-react";
 import { heroData } from "@/data/loveData";
 import { CardRow } from "@/components/CardRow";
+import { HumorDoDia } from "@/components/HumorDoDia";
 import { destaquesRow, momentosRow } from "@/data/loveData";
 
 export default function Index() {
