@@ -201,6 +201,10 @@ export default function Index() {
         <div ref={mavisRef}>
           <CardRow title="Mavis e Paulo" items={momentosRow} delay={400} />
         </div>
+        <div ref={humorRef} className="mt-8">
+          <HumorDoDia />
+        </div>
+
 
         {/* ── CUTE MESSAGE BANNER ── */}
         <section
