@@ -18,18 +18,24 @@ export type Database = {
         Row: {
           id: string
           note: string
+          note_read_at: string | null
+          note_updated_at: string
           selected_ids: string[]
           updated_at: string
         }
         Insert: {
           id?: string
           note?: string
+          note_read_at?: string | null
+          note_updated_at?: string
           selected_ids?: string[]
           updated_at?: string
         }
         Update: {
           id?: string
           note?: string
+          note_read_at?: string | null
+          note_updated_at?: string
           selected_ids?: string[]
           updated_at?: string
         }
@@ -59,6 +65,7 @@ export type Database = {
     }
     Functions: {
       is_mavi: { Args: never; Returns: boolean }
+      is_paulo: { Args: never; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
