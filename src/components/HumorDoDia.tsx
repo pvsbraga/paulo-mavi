@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { Check } from "lucide-react";
 
 import imgFelizinha from "@/assets/moods/felizinha.jpg";
 import imgQueroDengo from "@/assets/moods/quero-dengo.png";
@@ -18,55 +19,53 @@ import imgSurtada from "@/assets/moods/surtada.jpg";
 import imgTristinha from "@/assets/moods/tristinha.jpg";
 import imgEmburrada from "@/assets/moods/emburrada.jpg";
 
-type Mood = {
-  id: string;
-  name: string;
-  image: string;
-  color: string;
-  ring: string;
-  description: string;
-};
+type Mood = { id: string; name: string; image: string; ring: string };
 
 const moods: Mood[] = [
-  { id: "felizinha", name: "Felizinha", image: imgFelizinha, color: "#FFD978", ring: "#F5B82E", description: "Aquele dia em que tudo dá certo, com sorriso de canto de boca e energia de sobra." },
-  { id: "quero-dengo", name: "Quero Dengo", image: imgQueroDengo, color: "#FFB5C5", ring: "#E84C7A", description: "Voz fininha, biquinho, olhar pidão. Quer mimo, colo e atenção em dose dupla." },
-  { id: "esportista", name: "Esportista", image: imgEsportista, color: "#A8E6CF", ring: "#2DBE7C", description: "Tênis, vôlei, corrida, academia… tá pronta pra arrebentar e ainda sobrar energia." },
-  { id: "brabinha", name: "Brabinha", image: imgBrabinha, color: "#FFB3A7", ring: "#E84545", description: "Cuidado: pavio curto, monossílabos e cara fechada. No fundo só quer carinho." },
-  { id: "soninho", name: "Soninho", image: imgSoninho, color: "#B8D8F8", ring: "#4A90E2", description: "Só quer cama, manta, série e nada de responsabilidade hoje, por favor." },
-  { id: "saudades", name: "Saudades", image: imgSaudades, color: "#D4B5F9", ring: "#7B5BD9", description: "Tá sentindo sua falta de longe, querendo videochamada e mensagem a cada 10 minutos." },
-  { id: "fominha", name: "Fominha", image: imgFominha, color: "#FFD3A5", ring: "#F58A3F", description: "Tá com fome de tudo: hambúrguer, açaí, doce, salgado, japa… e logo!" },
-  { id: "cansadinha", name: "Cansadinha", image: imgCansadinha, color: "#B5C7E0", ring: "#3D5A80", description: "Bateria no zero, só quer descansar e ser cuidada hoje." },
-  { id: "energetica", name: "Energética", image: imgEnergetica, color: "#FFE066", ring: "#F2994A", description: "Energia lá em cima! Música alta, vontade de dançar e curtir a vida." },
-  { id: "estudantinha", name: "Estudantinha", image: imgEstudantinha, color: "#C5E1A5", ring: "#558B2F", description: "Modo foco total: caderno, fichamento, prova chegando. Não atrapalha." },
-  { id: "dramatica", name: "Dramática", image: imgDramatica, color: "#E0BBE4", ring: "#9B5DE5", description: "Tudo é o fim do mundo hoje. Novela mexicana ativada, mão na testa." },
-  { id: "surtada", name: "Surtada", image: imgSurtada, color: "#FFC8DD", ring: "#FF4FA3", description: "Olhos arregalados, mil coisas na cabeça, energia caótica no talo." },
-  { id: "tristinha", name: "Tristinha", image: imgTristinha, color: "#B8D4E8", ring: "#6B8FB3", description: "Coraçãozinho apertado, sem muito ânimo. Precisa de abraço apertado." },
-  { id: "emburrada", name: "Emburrada", image: imgEmburrada, color: "#F8C8D8", ring: "#C45C7C", description: "Cara fechada, biquinho, braços cruzados. Tá sentida e não vai esconder." },
+  { id: "felizinha", name: "Felizinha", image: imgFelizinha, ring: "#F5B82E" },
+  { id: "quero-dengo", name: "Quero Dengo", image: imgQueroDengo, ring: "#E84C7A" },
+  { id: "esportista", name: "Esportista", image: imgEsportista, ring: "#2DBE7C" },
+  { id: "brabinha", name: "Brabinha", image: imgBrabinha, ring: "#E84545" },
+  { id: "soninho", name: "Soninho", image: imgSoninho, ring: "#4A90E2" },
+  { id: "saudades", name: "Saudades", image: imgSaudades, ring: "#7B5BD9" },
+  { id: "fominha", name: "Fominha", image: imgFominha, ring: "#F58A3F" },
+  { id: "cansadinha", name: "Cansadinha", image: imgCansadinha, ring: "#3D5A80" },
+  { id: "energetica", name: "Energética", image: imgEnergetica, ring: "#F2994A" },
+  { id: "estudantinha", name: "Estudantinha", image: imgEstudantinha, ring: "#558B2F" },
+  { id: "dramatica", name: "Dramática", image: imgDramatica, ring: "#9B5DE5" },
+  { id: "surtada", name: "Surtada", image: imgSurtada, ring: "#FF4FA3" },
+  { id: "tristinha", name: "Tristinha", image: imgTristinha, ring: "#6B8FB3" },
+  { id: "emburrada", name: "Emburrada", image: imgEmburrada, ring: "#C45C7C" },
 ];
+
+const moodById = (id: string) => moods.find((m) => m.id === id);
 
 export function HumorDoDia() {
   const { username } = useAuth();
   const isMavi = username === "mavi";
+  const isPaulo = username === "paulo";
 
-  const [selectedIds, setSelectedIds] = useState<string[]>(["felizinha"]);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [note, setNote] = useState("");
+  const [noteUpdatedAt, setNoteUpdatedAt] = useState<string | null>(null);
+  const [noteReadAt, setNoteReadAt] = useState<string | null>(null);
   const [savingNote, setSavingNote] = useState(false);
 
-  // Initial load
   useEffect(() => {
     supabase
       .from("mood_state")
-      .select("selected_ids, note")
+      .select("selected_ids, note, note_updated_at, note_read_at")
       .eq("id", "current")
       .maybeSingle()
-      .then(({ data }) => {
+      .then(({ data }: any) => {
         if (data) {
-          setSelectedIds(data.selected_ids?.length ? data.selected_ids : ["felizinha"]);
+          setSelectedIds(data.selected_ids ?? []);
           setNote(data.note ?? "");
+          setNoteUpdatedAt(data.note_updated_at ?? null);
+          setNoteReadAt(data.note_read_at ?? null);
         }
       });
 
-    // Realtime
     const channel = supabase
       .channel("mood-state")
       .on(
@@ -75,8 +74,10 @@ export function HumorDoDia() {
         (payload: any) => {
           const row = payload.new;
           if (!row) return;
-          setSelectedIds(row.selected_ids?.length ? row.selected_ids : ["felizinha"]);
+          setSelectedIds(row.selected_ids ?? []);
           setNote(row.note ?? "");
+          setNoteUpdatedAt(row.note_updated_at ?? null);
+          setNoteReadAt(row.note_read_at ?? null);
         }
       )
       .subscribe();
@@ -103,7 +104,6 @@ export function HumorDoDia() {
     persistMoods(next);
   };
 
-  // Debounced save for the note
   useEffect(() => {
     if (!isMavi) return;
     setSavingNote(true);
@@ -119,8 +119,19 @@ export function HumorDoDia() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [note, isMavi]);
 
-  const selected = moods.filter((m) => selectedIds.includes(m.id));
-  const primary = selected[0] ?? moods[0];
+  const markAsRead = async () => {
+    const { error } = await supabase
+      .from("mood_state")
+      .update({ note_read_at: new Date().toISOString() } as any)
+      .eq("id", "current");
+    if (error) toast.error("Não foi possível marcar como lido");
+    else toast.success("Marcado como lido 👍");
+  };
+
+  const selected = selectedIds.map(moodById).filter(Boolean) as Mood[];
+  const primaryRing = selected[0]?.ring ?? "#E50914";
+  const noteIsRead =
+    !!noteReadAt && (!noteUpdatedAt || new Date(noteReadAt) >= new Date(noteUpdatedAt));
 
   return (
     <section className="px-6 md:px-12 mb-12">
@@ -131,8 +142,8 @@ export function HumorDoDia() {
       <div
         className="rounded-3xl p-5 md:p-8 transition-colors duration-500"
         style={{
-          background: `linear-gradient(135deg, ${primary.color}33, hsl(var(--netflix-card)))`,
-          border: `1px solid ${primary.ring}55`,
+          background: `linear-gradient(135deg, ${primaryRing}22, hsl(var(--netflix-card)))`,
+          border: `1px solid ${primaryRing}55`,
         }}
       >
         <div className="flex flex-col items-center text-center mb-6">
@@ -141,39 +152,47 @@ export function HumorDoDia() {
               {isMavi ? "Toca em um ou mais humores abaixo 🤍" : "Mavi ainda não escolheu o humor de hoje 🤍"}
             </p>
           ) : (
-            <>
-              <div className="flex flex-wrap items-center justify-center gap-4 mb-4">
-                {selected.map((m) => (
-                  <div key={m.id} className="flex flex-col items-center">
+            <div className="flex flex-wrap items-start justify-center gap-3 md:gap-4 mb-2">
+              {selected.map((m, idx) => (
+                <div key={m.id} className="flex flex-col items-center">
+                  <div className="relative">
                     <div
-                      className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden transition-all duration-500"
-                      style={{ boxShadow: `0 0 0 4px ${m.ring}, 0 12px 30px ${m.ring}55` }}
+                      className="w-24 h-24 md:w-32 md:h-32 rounded-xl overflow-hidden"
+                      style={{ boxShadow: `0 0 0 3px ${m.ring}, 0 10px 25px ${m.ring}55` }}
                     >
                       <img src={m.image} alt={m.name} className="w-full h-full object-cover" loading="lazy" />
                     </div>
-                    <span className="mt-2 text-xs md:text-sm text-foreground/90 font-semibold">{m.name}</span>
+                    <span
+                      className="absolute -top-2 -left-2 w-6 h-6 rounded-full text-[11px] font-bold flex items-center justify-center text-foreground"
+                      style={{ backgroundColor: m.ring }}
+                    >
+                      {idx + 1}
+                    </span>
                   </div>
-                ))}
-              </div>
-              <h3 className="font-display text-2xl md:text-3xl text-foreground tracking-wide">
-                {selected.map((m) => m.name).join(" + ")}
-              </h3>
-              <p className="text-foreground/80 text-sm md:text-base max-w-md mt-2 leading-relaxed">
-                {primary.description}
-              </p>
-            </>
+                  <span className="mt-2 text-xs md:text-sm text-foreground/90 font-semibold">{m.name}</span>
+                </div>
+              ))}
+            </div>
           )}
 
           <div
             className="mt-5 rounded-2xl p-4 max-w-xl w-full text-left"
-            style={{ backgroundColor: `${primary.ring}1c`, border: `1px dashed ${primary.ring}77` }}
+            style={{ backgroundColor: `${primaryRing}1c`, border: `1px dashed ${primaryRing}77` }}
           >
-            <span
-              className="font-semibold uppercase tracking-widest text-[10px] block mb-1"
-              style={{ color: primary.ring }}
-            >
-              Recadinho da Mavi pro Paulo
-            </span>
+            <div className="flex items-center justify-between mb-1">
+              <span
+                className="font-semibold uppercase tracking-widest text-[10px]"
+                style={{ color: primaryRing }}
+              >
+                Recadinho da Mavi pro Paulo
+              </span>
+              {noteIsRead && (
+                <span className="text-[11px] text-green-400 flex items-center gap-1">
+                  👍 Paulo leu
+                </span>
+              )}
+            </div>
+
             {isMavi ? (
               <>
                 <p className="text-foreground/70 text-[11px] md:text-xs mb-2 leading-relaxed">
@@ -193,35 +212,58 @@ export function HumorDoDia() {
                 </div>
               </>
             ) : (
-              <p className="text-foreground/90 text-sm whitespace-pre-wrap leading-relaxed min-h-[3rem]">
-                {note?.trim() ? note : "A Mavi ainda não deixou recado por aqui hoje 🤍"}
-              </p>
+              <>
+                <p className="text-foreground/90 text-sm whitespace-pre-wrap leading-relaxed min-h-[3rem]">
+                  {note?.trim() ? note : "A Mavi ainda não deixou recado por aqui hoje 🤍"}
+                </p>
+                {isPaulo && note?.trim() && (
+                  <button
+                    onClick={markAsRead}
+                    disabled={noteIsRead}
+                    className="mt-3 inline-flex items-center gap-2 text-xs font-semibold px-3 py-2 rounded-lg transition-colors disabled:opacity-60"
+                    style={{
+                      backgroundColor: noteIsRead ? "transparent" : primaryRing,
+                      color: noteIsRead ? "#4ade80" : "hsl(var(--foreground))",
+                      border: noteIsRead ? "1px solid #4ade8055" : "none",
+                    }}
+                  >
+                    {noteIsRead ? <><Check size={14} /> Você já leu</> : <>👍 Marcar como lido</>}
+                  </button>
+                )}
+              </>
             )}
           </div>
         </div>
 
         <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 gap-3 md:gap-4 justify-items-center">
           {moods.map((m) => {
-            const active = selectedIds.includes(m.id);
+            const order = selectedIds.indexOf(m.id);
+            const active = order !== -1;
             return (
               <button
                 key={m.id}
                 onClick={() => toggle(m.id)}
                 disabled={!isMavi}
-                className={`flex flex-col items-center gap-1 group ${
-                  !isMavi ? "cursor-default" : ""
-                }`}
+                className={`flex flex-col items-center gap-1 group ${!isMavi ? "cursor-default" : ""}`}
               >
                 <div
-                  className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden transition-all duration-300 group-hover:scale-110"
+                  className="relative w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden transition-all duration-300 group-hover:scale-110"
                   style={{
                     boxShadow: active
                       ? `0 0 0 3px ${m.ring}, 0 8px 20px ${m.ring}66`
                       : `0 4px 12px hsl(0 0% 0% / 0.4)`,
-                    opacity: active ? 1 : isMavi ? 0.75 : 0.5,
+                    opacity: active ? 1 : isMavi ? 0.7 : 0.45,
                   }}
                 >
                   <img src={m.image} alt={m.name} className="w-full h-full object-cover" loading="lazy" />
+                  {active && (
+                    <span
+                      className="absolute top-0.5 left-0.5 w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center text-foreground"
+                      style={{ backgroundColor: m.ring }}
+                    >
+                      {order + 1}
+                    </span>
+                  )}
                 </div>
                 <span
                   className="text-[10px] md:text-xs text-center leading-tight transition-colors"
