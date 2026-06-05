@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Heart } from "lucide-react";
 import { toast } from "sonner";
+import { profileAvatars } from "@/lib/profileAvatars";
 
 type Username = "mavi" | "paulo";
 const emailFor = (u: Username) => `${u}@loveflix.app`;
@@ -108,13 +109,20 @@ export default function Auth() {
                   key={u}
                   type="button"
                   onClick={() => setUsername(u)}
-                  className={`py-3 rounded-lg border transition-all ${
+                  className={`py-3 px-2 rounded-lg border transition-all flex flex-col items-center gap-2 ${
                     username === u
                       ? "border-netflix-red bg-netflix-red/10 text-foreground"
                       : "border-border text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  {u === "mavi" ? "Mavi" : "Paulo"}
+                  <img
+                    src={profileAvatars[u]}
+                    alt={u}
+                    className={`w-16 h-16 rounded-full object-cover border-2 ${
+                      username === u ? "border-netflix-red" : "border-border"
+                    }`}
+                  />
+                  <span className="text-sm font-semibold">{u === "mavi" ? "Mavi" : "Paulo"}</span>
                 </button>
               ))}
             </div>

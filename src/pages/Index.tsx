@@ -5,6 +5,7 @@ import { CardRow } from "@/components/CardRow";
 import { HumorDoDia } from "@/components/HumorDoDia";
 import { destaquesRow, momentosRow } from "@/data/loveData";
 import { useAuth } from "@/hooks/useAuth";
+import { profileAvatars } from "@/lib/profileAvatars";
 
 export default function Index() {
   const { username, signOut } = useAuth();
@@ -94,14 +95,18 @@ export default function Index() {
         {/* Right side */}
         <div className="flex items-center gap-3">
           {username && (
-            <span className="hidden sm:inline text-xs text-foreground/70 uppercase tracking-widest">
-              {username === "mavi" ? "Mavi" : "Paulo"}
-            </span>
+            <div className="flex items-center gap-2">
+              <img
+                src={profileAvatars[username]}
+                alt={username}
+                className="w-9 h-9 rounded-full object-cover border-2 border-netflix-red"
+              />
+              <span className="hidden sm:inline text-xs text-foreground/80 uppercase tracking-widest font-semibold">
+                {username === "mavi" ? "Mavi" : "Paulo"}
+              </span>
+            </div>
           )}
-          <Heart
-            size={22}
-            className="text-netflix-red fill-netflix-red animate-pulse-heart"
-          />
+          <Heart size={22} className="text-netflix-red fill-netflix-red animate-pulse-heart" />
           <button
             onClick={signOut}
             title="Sair"
