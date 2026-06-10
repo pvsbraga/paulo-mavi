@@ -50,6 +50,8 @@ export function HumorDoDia() {
   const [noteUpdatedAt, setNoteUpdatedAt] = useState<string | null>(null);
   const [noteReadAt, setNoteReadAt] = useState<string | null>(null);
   const [savingNote, setSavingNote] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+  const isComposingRef = (typeof window !== "undefined" ? (window as any) : {});
 
   useEffect(() => {
     supabase
@@ -75,9 +77,13 @@ export function HumorDoDia() {
           const row = payload.new;
           if (!row) return;
           setSelectedIds(row.selected_ids ?? []);
-          setNote(row.note ?? "");
           setNoteUpdatedAt(row.note_updated_at ?? null);
           setNoteReadAt(row.note_read_at ?? null);
+          // Do not overwrite the note text for Mavi while she is typing/editing,
+          // to avoid mobile IME glitches (cursor jumps, swapped characters).
+          if (!isMavi) {
+            setNote(row.note ?? "");
+          }
         }
       )
       .subscribe();
@@ -85,7 +91,8 @@ export function HumorDoDia() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMavi]);
 
   const persistMoods = async (ids: string[]) => {
     const { error } = await supabase
