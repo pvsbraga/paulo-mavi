@@ -75,9 +75,13 @@ export function HumorDoDia() {
           const row = payload.new;
           if (!row) return;
           setSelectedIds(row.selected_ids ?? []);
-          setNote(row.note ?? "");
           setNoteUpdatedAt(row.note_updated_at ?? null);
           setNoteReadAt(row.note_read_at ?? null);
+          // Do not overwrite the note text for Mavi while she is typing/editing,
+          // to avoid mobile IME glitches (cursor jumps, swapped characters).
+          if (!isMavi) {
+            setNote(row.note ?? "");
+          }
         }
       )
       .subscribe();
@@ -85,7 +89,8 @@ export function HumorDoDia() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMavi]);
 
   const persistMoods = async (ids: string[]) => {
     const { error } = await supabase
@@ -204,7 +209,11 @@ export function HumorDoDia() {
                   placeholder="Hoje eu tô assim... me trata com... pode fazer..."
                   maxLength={3000}
                   rows={5}
-                  className="w-full bg-background/40 text-foreground text-sm rounded-xl p-3 outline-none resize-y border border-border focus:border-foreground/40 transition-colors"
+                  autoCorrect="off"
+                  autoCapitalize="sentences"
+                  spellCheck={false}
+                  inputMode="text"
+                  className="w-full bg-background/40 text-foreground text-base md:text-sm rounded-xl p-3 outline-none resize-y border border-border focus:border-foreground/40 transition-colors"
                 />
                 <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
                   <span>{savingNote ? "Salvando..." : "Salvo automaticamente"}</span>
