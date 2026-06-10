@@ -50,8 +50,6 @@ export function HumorDoDia() {
   const [noteUpdatedAt, setNoteUpdatedAt] = useState<string | null>(null);
   const [noteReadAt, setNoteReadAt] = useState<string | null>(null);
   const [savingNote, setSavingNote] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
-  const isComposingRef = (typeof window !== "undefined" ? (window as any) : {});
 
   useEffect(() => {
     supabase
