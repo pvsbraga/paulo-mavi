@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
@@ -16,7 +16,7 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     mode === "development" && componentTagger(),
-    mode === "development" && {
+    mode === "development" && ({
       name: "preview-lovable-assets",
       configureServer(server) {
         server.middlewares.use(async (req, res, next) => {
@@ -37,7 +37,7 @@ export default defineConfig(({ mode }) => ({
           }
         });
       },
-    },
+    } satisfies Plugin),
   ].filter(Boolean),
   resolve: {
     alias: {
