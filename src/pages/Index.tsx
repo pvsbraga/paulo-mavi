@@ -6,6 +6,9 @@ import { HumorDoDia } from "@/components/HumorDoDia";
 import { destaquesRow, momentosRow } from "@/data/loveData";
 import { useAuth } from "@/hooks/useAuth";
 import { profileAvatars } from "@/lib/profileAvatars";
+import { Button } from "@/components/ui/button";
+import { ListaDeFilmes } from "@/components/ListaDeFilmes";
+import { MusicControl } from "@/components/MusicControl";
 
 export default function Index() {
   const { username, signOut } = useAuth();
@@ -16,6 +19,7 @@ export default function Index() {
   const destaquesRef = useRef<HTMLDivElement>(null);
   const mavisRef = useRef<HTMLDivElement>(null);
   const humorRef = useRef<HTMLDivElement>(null);
+  const filmesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -36,12 +40,14 @@ export default function Index() {
             className="relative max-w-2xl w-full mx-4"
             onClick={(e) => e.stopPropagation()}
           >
-            <button
+            <Button
               onClick={() => setShowVideo(false)}
-              className="absolute -top-10 right-0 text-foreground/70 hover:text-foreground transition-colors flex items-center gap-1 text-sm"
+              variant="ghost"
+              size="sm"
+              className="absolute -top-10 right-0 text-foreground/70 hover:text-foreground"
             >
               <X size={18} /> Fechar
-            </button>
+            </Button>
             <video
               ref={videoRef}
               src={heroData.video}
@@ -71,25 +77,36 @@ export default function Index() {
         </div>
 
         {/* Nav links */}
-        <div className="hidden md:flex items-center gap-6 text-sm text-foreground/80">
-          <span
-            className="hover:text-foreground cursor-pointer transition-colors"
+        <div className="hidden md:flex items-center gap-4 text-sm text-foreground/80">
+          <Button
+            variant="ghost" size="sm"
+            className="text-foreground/80 hover:text-foreground px-2"
             onClick={() => destaquesRef.current?.scrollIntoView({ behavior: "smooth" })}
           >
             Destaques de Nós
-          </span>
-          <span
-            className="hover:text-foreground cursor-pointer transition-colors"
+          </Button>
+          <Button
+            variant="ghost" size="sm"
+            className="text-foreground/80 hover:text-foreground px-2"
             onClick={() => mavisRef.current?.scrollIntoView({ behavior: "smooth" })}
           >
             Mavis e Paulo
-          </span>
-          <span
-            className="hover:text-foreground cursor-pointer transition-colors"
+          </Button>
+          <Button
+            variant="ghost" size="sm"
+            className="text-foreground/80 hover:text-foreground px-2"
             onClick={() => humorRef.current?.scrollIntoView({ behavior: "smooth" })}
           >
             Humor do Dia
-          </span>
+          </Button>
+          <Button
+            variant="ghost" size="sm"
+            className="text-foreground/80 hover:text-foreground px-2"
+            onClick={() => filmesRef.current?.scrollIntoView({ behavior: "smooth" })}
+          >
+            Lista de Filmes
+          </Button>
+          <MusicControl />
         </div>
 
         {/* Right side */}
@@ -107,13 +124,16 @@ export default function Index() {
             </div>
           )}
           <Heart size={22} className="text-netflix-red fill-netflix-red animate-pulse-heart" />
-          <button
+          <div className="md:hidden"><MusicControl /></div>
+          <Button
             onClick={signOut}
             title="Sair"
-            className="text-foreground/70 hover:text-foreground transition-colors"
+            aria-label="Sair"
+            variant="ghost" size="icon"
+            className="text-foreground/70 hover:text-foreground"
           >
             <LogOut size={18} />
-          </button>
+          </Button>
         </div>
       </nav>
 
@@ -122,10 +142,10 @@ export default function Index() {
         {/* Background */}
         <img
           src={heroData.image}
-          alt="Hero"
+          alt="Paulo beijando a Mavi na comemoração de um ano"
           width={1280}
           height={720}
-          className="absolute inset-0 w-full h-full object-cover object-center"
+          className="absolute inset-0 w-full h-full object-cover object-[center_68%] md:object-[center_57%]"
         />
 
         {/* Gradient overlays */}
@@ -185,27 +205,28 @@ export default function Index() {
             className="flex gap-3 animate-fade-in-up"
             style={{ animationDelay: "500ms", animationFillMode: "both" }}
           >
-            <button
+            <Button
               onClick={() => setShowVideo(true)}
-              className="flex items-center gap-2 bg-foreground text-background font-semibold px-6 py-2.5 rounded text-sm hover:bg-foreground/80 transition-colors"
+              className="bg-foreground text-background font-semibold px-6 hover:bg-foreground/80"
             >
               <Play size={16} className="fill-background" />
               Assistir
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => setShowInfo(!showInfo)}
-              className="flex items-center gap-2 bg-muted/80 text-foreground font-semibold px-6 py-2.5 rounded text-sm hover:bg-muted transition-colors backdrop-blur-sm"
+              variant="secondary"
+              className="bg-muted/80 text-foreground font-semibold px-6 hover:bg-muted backdrop-blur-sm"
             >
               <Info size={16} />
               Mais Info
-            </button>
+            </Button>
           </div>
 
           {/* Info panel */}
           {showInfo && (
-            <div className="mt-4 max-w-sm bg-netflix-card/90 backdrop-blur-md rounded-lg p-4 border border-border animate-fade-in-up">
-              <p className="text-foreground/90 text-sm leading-relaxed italic">
-                "você é minha história favorita, Mavi🤍"
+            <div className="mt-4 max-w-xl max-h-[38vh] overflow-y-auto bg-netflix-card/90 backdrop-blur-md rounded-lg p-4 border border-border animate-fade-in-up">
+              <p className="text-foreground/90 text-sm leading-relaxed">
+                Eu te amo de incontáveis formas Mavi, sou cada dia mais feliz contigo e não tenho medo de nada que possa nos abalar pois sei que nosso laço é mais forte que tudo, e ao invés de nos afastarmos, sinto que sempre saímos de situações difíceis mais unidos e fortes que antes. Parabéns para nós, meu amor. Ansioso pelos próximos dias, meses e anos ao seu lado
               </p>
             </div>
           )}
@@ -222,6 +243,9 @@ export default function Index() {
         </div>
         <div ref={humorRef} className="mt-8">
           <HumorDoDia />
+        </div>
+        <div ref={filmesRef} className="scroll-mt-28">
+          <ListaDeFilmes />
         </div>
 
 
