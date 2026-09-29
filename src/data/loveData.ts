@@ -1,4 +1,3 @@
-import photoHero from "@/assets/photo-hero.jpg";
 import photo2 from "@/assets/photo-2.jpg";
 import photo3 from "@/assets/photo-3.jpg";
 import photo4 from "@/assets/photo-4.jpg";
@@ -8,13 +7,14 @@ import photo7 from "@/assets/photo-7.jpg";
 import photo8 from "@/assets/photo-8.jpg";
 import video1 from "@/assets/video-1.mp4";
 import video2 from "@/assets/video-2.mp4";
+import anniversaryPhoto from "@/assets/anniversary/one-year-photo.jpg.asset.json";
 
 export const heroData = {
-  title: "O maior casal do Brasil",
+  title: "Especial comemoração de 1 ano!",
   subtitle: "Original Só Nosso",
-  description: "Paulo e Mavis: de 26/09/2025 até o fim, com muitos jogos, filmes, séries e esportes",
+  description: "Feliz 1 ano da gente, meu amor. Clique em 'Mais Info'",
   tags: ["Amor", "Real", "Para Sempre", "2025"],
-  image: photoHero,
+  image: anniversaryPhoto.url,
   video: video1,
   match: "Combinamos muito",
 };
