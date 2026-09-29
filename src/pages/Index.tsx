@@ -62,7 +62,7 @@ export default function Index() {
 
       {/* ── NAVBAR ── */}
       <nav
-        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-4 transition-all duration-500"
+        className="fixed top-0 left-0 right-0 z-50 flex flex-wrap items-center justify-between px-6 md:px-12 py-3 transition-all duration-500"
         style={{
           background: scrolled
             ? "hsl(var(--netflix-darker))"
@@ -77,7 +77,7 @@ export default function Index() {
         </div>
 
         {/* Nav links */}
-        <div className="hidden md:flex items-center gap-4 text-sm text-foreground/80">
+        <div className="hidden lg:flex items-center gap-2 text-sm text-foreground/80">
           <Button
             variant="ghost" size="sm"
             className="text-foreground/80 hover:text-foreground px-2"
@@ -106,7 +106,6 @@ export default function Index() {
           >
             Lista de Filmes
           </Button>
-          <MusicControl />
         </div>
 
         {/* Right side */}
@@ -124,7 +123,7 @@ export default function Index() {
             </div>
           )}
           <Heart size={22} className="text-netflix-red fill-netflix-red animate-pulse-heart" />
-          <div className="md:hidden"><MusicControl /></div>
+          <MusicControl />
           <Button
             onClick={signOut}
             title="Sair"
@@ -134,6 +133,12 @@ export default function Index() {
           >
             <LogOut size={18} />
           </Button>
+        </div>
+        <div className="flex lg:hidden order-last w-full items-center gap-1 overflow-x-auto whitespace-nowrap pt-2 text-xs -mx-1 px-1" aria-label="Seções">
+          <Button variant="ghost" size="sm" className="shrink-0 px-2 text-foreground/80" onClick={() => destaquesRef.current?.scrollIntoView({ behavior: "smooth" })}>Destaques de Nós</Button>
+          <Button variant="ghost" size="sm" className="shrink-0 px-2 text-foreground/80" onClick={() => mavisRef.current?.scrollIntoView({ behavior: "smooth" })}>Mavis e Paulo</Button>
+          <Button variant="ghost" size="sm" className="shrink-0 px-2 text-foreground/80" onClick={() => humorRef.current?.scrollIntoView({ behavior: "smooth" })}>Humor do Dia</Button>
+          <Button variant="ghost" size="sm" className="shrink-0 px-2 text-foreground/80" onClick={() => filmesRef.current?.scrollIntoView({ behavior: "smooth" })}>Lista de Filmes</Button>
         </div>
       </nav>
 
