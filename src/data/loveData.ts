@@ -1,4 +1,3 @@
-import photoHero from "@/assets/photo-hero.jpg";
 import photo2 from "@/assets/photo-2.jpg";
 import photo3 from "@/assets/photo-3.jpg";
 import photo4 from "@/assets/photo-4.jpg";
